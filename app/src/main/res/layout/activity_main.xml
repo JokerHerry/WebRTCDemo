@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mypc.webrtc_demo.Activity.MainActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:onClick="GetPermission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="get_permission"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:onClick="GoScreenCapturerDemo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="ScreenCapturerDemo" />
+
+</LinearLayout>

@@ -115,42 +115,42 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
                     peer.pc.createOffer(peer,client.mPeerConnConstraints);
                     break;
                 case "disposeAnsewer":
+
                     Log.e(TAG, "to server " + " connect ");
                     if (client.peers.containsKey(from)){
                         JSONObject payload = data.optJSONObject("payload");
-                        WebRTCClient.Peer peer1 = client.peers.get(from);
+                        peer = client.peers.get(from);
                         SessionDescription sdp = new SessionDescription(
                                 SessionDescription.Type.fromCanonicalForm(payload.optString("type")),
                                 payload.optString("sdp")
                         );
-                        peer1.pc.setRemoteDescription(peer1,sdp);
+
+                        peer.pc.setRemoteDescription(peer,sdp);
                         Log.e(TAG, "OnMessage:  执行" );
                     }
 
-
                     break;
                 case "candidate":
-                    if (client.peers.containsKey(from)){
-                        if (client.peers.containsKey(from)) {
-                            JSONObject payload = data.optJSONObject("payload");
-                            PeerConnection pc = client.peers.get(from).pc;
-                            if (pc.getRemoteDescription() != null) {
-                                IceCandidate candidate = new IceCandidate(
-                                        payload.optString("id"),
-                                        payload.optInt("label"),
-                                        payload.optString("candidate")
-                                );
-                                pc.addIceCandidate(candidate);
-                            }
-                        }
-                    }
+//                    if (client.peers.containsKey(from)){
+//                        if (client.peers.containsKey(from)) {
+//                            JSONObject payload = data.optJSONObject("payload");
+//                            PeerConnection pc = client.peers.get(from).pc;
+//                            if (pc.getRemoteDescription() != null) {
+//                                IceCandidate candidate = new IceCandidate(
+//                                        payload.optString("id"),
+//                                        payload.optInt("label"),
+//                                        payload.optString("candidate")
+//                                );
+//                                pc.addIceCandidate(candidate);
+//                            }
+//                        }
+//                    }
                     break;
             }
 
         }catch (JSONException e) {
             e.printStackTrace();
         }
-
 
     }
 

@@ -30,7 +30,6 @@ public class WebRTCClient {
     private final WebRtcParame parame;
     private final VideoCapturer capturer;
     PeerConnectionFactory factory;
-    MediaStream stream;
     Context context;
     private LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<>();
     public HashMap<String, Peer> peers = new HashMap<>();
@@ -54,6 +53,9 @@ public class WebRTCClient {
 //        PeerConnectionFactory.Builder builder = PeerConnectionFactory.builder();
 //        factory = builder.createPeerConnectionFactory();
         factory = new PeerConnectionFactory();
+
+        iceServers.add(new PeerConnection.IceServer("stun:23.21.150.121"));
+        iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
 
         mPeerConnConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
         mPeerConnConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
@@ -84,8 +86,8 @@ public class WebRTCClient {
                 Log.e(TAG, "initStream: ");
             }
             localVideoTrack.setEnabled(true);
-            stream = factory.createLocalMediaStream("ARDAMS");
-            stream.addTrack(localVideoTrack);
+            mLocalMediaStream = factory.createLocalMediaStream("ARDAMS");
+            mLocalMediaStream.addTrack(localVideoTrack);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,7 +103,7 @@ public class WebRTCClient {
 
             this.pc = factory.createPeerConnection(iceServers,videoConstraints,this);
 
-            pc.addStream(stream);
+            pc.addStream(mLocalMediaStream);
         }
 
         @Override
@@ -174,7 +176,6 @@ public class WebRTCClient {
             Log.e(TAG, "Peer onCreateSuccess: ");
 
             // 当创建offer 成功的时候调用
-
             try {
                 JSONObject payload = new JSONObject();
                 payload.put("type",sdp.type.canonicalForm());

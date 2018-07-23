@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WebRTC-Demo</string>
+
+    <string name="host">http://192.168.2.107:3000</string>
 </resources>

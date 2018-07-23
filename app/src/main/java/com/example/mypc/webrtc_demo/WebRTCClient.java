@@ -113,7 +113,7 @@ public class WebRTCClient {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-            Log.e(TAG, "Peer onIceConnectionChange: ");
+            Log.e(TAG, "onIceConnectionCha nge: "  + iceConnectionState.toString() + "  end");
         }
 
         @Override
@@ -207,8 +207,7 @@ public class WebRTCClient {
 
     private void sendMessage(String id, String candidate, JSONObject payload) {
         try {
-            JSONObject message = null;
-            message = new JSONObject();
+            JSONObject message = new JSONObject();
             message.put("to", id);
             message.put("type", candidate);
             message.put("payload", payload);
@@ -222,6 +221,19 @@ public class WebRTCClient {
         Peer peer = new Peer(id);
         peers.put(id, peer);
         return peer;
+    }
+
+    public void onDestroy(){
+        for (Peer peer:peers.values()) {
+            peer.pc.dispose();
+        }
+        if (factory != null){
+            factory.dispose();
+        }
+        if (mVideoSource != null){
+            mVideoSource.dispose();
+        }
+        Log.e(TAG, "onDestroy:   client 清空完毕"  );
     }
 
 }

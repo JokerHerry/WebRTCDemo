@@ -29,7 +29,7 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
     private static final String TAG = "ScreenCapturerActivity";
     WebRtcParame parame;
     WebRTCClient client;
-    String mSocketAddress = "http://192.168.2.107:3000/";
+    String mSocketAddress ;
     Socket socket = null;
     MessageHandler messageHandler = new MessageHandler(this);
     ScreenCapturerAndroid capturer;
@@ -38,12 +38,18 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mSocketAddress = this.getString(R.string.host);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_capturer);
 
         MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) getApplication().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),INTENT_RECODE);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -79,6 +85,15 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
             e.printStackTrace();
         }
     }
+    public void CloseSocket(View view) {
+
+        client.onDestroy();
+        socket.disconnect();
+        socket.close();
+        parame = null;
+
+        Log.e(TAG, "CloseSocket: 清空完毕" );
+    }
 
     @Override
     public void OnGetID(String sockeID  ) {
@@ -112,10 +127,14 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
                 case "pleaseSendOffer":
                     Log.e(TAG, "to server " + " send offer");
                     WebRTCClient.Peer peer = client.addPeer(from);
-                    peer.pc.createOffer(peer,client.mPeerConnConstraints);
+                    try {
+                        peer.pc.createOffer(peer,client.mPeerConnConstraints);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                     break;
                 case "disposeAnsewer":
-
                     Log.e(TAG, "to server " + " connect ");
                     if (client.peers.containsKey(from)){
                         JSONObject payload = data.optJSONObject("payload");
@@ -131,20 +150,20 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
 
                     break;
                 case "candidate":
-//                    if (client.peers.containsKey(from)){
-//                        if (client.peers.containsKey(from)) {
-//                            JSONObject payload = data.optJSONObject("payload");
-//                            PeerConnection pc = client.peers.get(from).pc;
-//                            if (pc.getRemoteDescription() != null) {
-//                                IceCandidate candidate = new IceCandidate(
-//                                        payload.optString("id"),
-//                                        payload.optInt("label"),
-//                                        payload.optString("candidate")
-//                                );
-//                                pc.addIceCandidate(candidate);
-//                            }
-//                        }
-//                    }
+                    if (client.peers.containsKey(from)){
+                        if (client.peers.containsKey(from)) {
+                            JSONObject payload = data.optJSONObject("payload");
+                            PeerConnection pc = client.peers.get(from).pc;
+                            if (pc.getRemoteDescription() != null) {
+                                IceCandidate candidate = new IceCandidate(
+                                        payload.optString("id"),
+                                        payload.optInt("label"),
+                                        payload.optString("candidate")
+                                );
+                                pc.addIceCandidate(candidate);
+                            }
+                        }
+                    }
                     break;
             }
 
@@ -156,6 +175,9 @@ public class ScreenCapturerActivity extends AppCompatActivity implements MainAct
 
     @Override
     public void OnCall(Object applicant) {
+//        Log.e(TAG, "OnCall: 回调" );
         socket.emit("message",applicant);
     }
+
+
 }

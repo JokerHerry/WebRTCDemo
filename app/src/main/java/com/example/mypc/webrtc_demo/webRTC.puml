@@ -1,0 +1,45 @@
+@startuml
+
+class PeerConnectionFactory{
+    - class InitializationOptions
+
+    + initialize()
+    + PeerConnectionFactory()
+
+    + createPeerConnection()
+    + createPeerConnection()
+    + createLocalMediaStream()
+    + createVideoSource()
+    + createVideoTrack()
+    + createAudioSource()
+    + createAudioTrack()
+    + startAecDump()
+
+}
+
+class VideoFrame
+interface VideoFrame.Buffer
+interface I420Buffer
+class JavaI420Buffer implements I420Buffer
+interface I420Buffer extends VideoFrame.Buffer
+class NV12Buffer implements VideoFrame.Buffer
+class NV21Buffer implements VideoFrame.Buffer
+interface TextureBuffer extends VideoFrame.Buffer
+
+class MediaSource
+class VideoTrack extends MediaStreamTrack
+class MediaStream{
+    audioTracks
+    videoTracks
+    preservedVideoTracks
+}
+
+
+PeerConnectionFactory -left-> MediaStream : 实现
+
+
+
+
+
+
+@enduml

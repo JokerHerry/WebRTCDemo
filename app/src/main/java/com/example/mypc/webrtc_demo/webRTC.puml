@@ -28,6 +28,7 @@ interface TextureBuffer extends VideoFrame.Buffer
 
 class MediaSource
 class VideoTrack extends MediaStreamTrack
+class AudioTrack extends MediaStreamTrack
 class MediaStream{
     audioTracks
     videoTracks
@@ -35,11 +36,25 @@ class MediaStream{
 }
 
 
-PeerConnectionFactory -left-> MediaStream : 实现
+PeerConnectionFactory o-left MediaStream : 实现
+MediaStream o-left VideoTrack : 实现
+MediaStream o-- AudioTrack : 实现
 
 
+interface VideoCapturer{
+    initialize()
+    startCapture()
+    stopCapture()
+    changeCaptureFormat()
+    dispose()
+    isScreencast()
+}
+interface VideoCapturer.CapturerObserver
+class ScreenCapturerAndroid implements VideoCapturer, SurfaceTextureHelper.OnTextureFrameAvailableListener
 
 
+class SurfaceTextureHelper
+class SurfaceTextureHelper.OnTextureFrameAvailableListener
 
 
 @enduml
